@@ -4,7 +4,7 @@
 * git clone https://github.com/bgumodo/bgumodo-dev.git
 
 ## get last changes 
-* git clone https://github.com/bgumodo/bgumodo-dev.git
+* git pull https://github.com/bgumodo/bgumodo-dev.git
 
 ## editing
 * edit your code
