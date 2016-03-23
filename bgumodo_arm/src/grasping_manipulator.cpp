@@ -67,8 +67,8 @@ int main(int argc, char *argv[])
 	my_plan 									= new moveit::planning_interface::MoveGroup::Plan;
 	left_finger_pub 							= n.advertise<std_msgs::Float64>("left_finger_controller/command", 100);
 	right_finger_pub 							= n.advertise<std_msgs::Float64>("right_finger_controller/command", 100);
-	status_pub 									= n.advertise<std_msgs::String>("grasping_status", 100);
-	ros::Subscriber sub 						= n.subscribe("grasping_listener", 10, coffeeGrasspingManipultaor);
+	status_pub 									= n.advertise<std_msgs::String>("grasping_manipulator/status", 100);
+	ros::Subscriber sub 						= n.subscribe("grasping_manipulator/command", 10, coffeeGrasspingManipultaor);
 
 	ros::Duration(1.0).sleep(); //time to construct ros subscribers and publishers
 
