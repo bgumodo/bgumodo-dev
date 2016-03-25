@@ -1,0 +1,67 @@
+Language model created by QuickLM on Tue Mar  8 08:35:58 EST 2016
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 7 sentences and 9 words
+
+\data\
+ngram 1=9
+ngram 2=17
+ngram 3=18
+
+\1-grams:
+-1.8451 ---------- -0.2553
+-1.0000 </s> -0.3010
+-1.0000 <s> -0.2041
+-1.0669 COFFEE -0.2041
+-1.3680 HERE -0.2341
+-1.2430 IS -0.2553
+-1.3680 READY -0.2553
+-1.5441 THE -0.2621
+-1.5441 YOUR -0.2621
+
+\2-grams:
+-0.3010 ---------- </s> -0.3010
+-1.1461 <s> ---------- 0.0000
+-1.1461 <s> COFFEE -0.2632
+-0.6690 <s> HERE 0.0000
+-1.1461 <s> THE 0.0000
+-1.1461 <s> YOUR 0.0000
+-0.6021 COFFEE </s> -0.3010
+-0.7782 COFFEE IS -0.1761
+-1.0792 COFFEE READY 0.0000
+-0.7782 HERE COFFEE -0.1761
+-0.4771 HERE IS -0.1761
+-0.6021 IS READY 0.0000
+-0.9031 IS THE 0.0000
+-0.9031 IS YOUR 0.0000
+-0.3010 READY </s> -0.3010
+-0.3010 THE COFFEE -0.0669
+-0.3010 YOUR COFFEE -0.0669
+
+\3-grams:
+-0.3010 <s> ---------- </s>
+-0.3010 <s> COFFEE READY
+-0.7782 <s> HERE COFFEE
+-0.4771 <s> HERE IS
+-0.3010 <s> THE COFFEE
+-0.3010 <s> YOUR COFFEE
+-0.3010 COFFEE IS READY
+-0.3010 COFFEE READY </s>
+-0.3010 HERE COFFEE </s>
+-0.6021 HERE IS THE
+-0.6021 HERE IS YOUR
+-0.3010 IS READY </s>
+-0.3010 IS THE COFFEE
+-0.3010 IS YOUR COFFEE
+-0.6021 THE COFFEE </s>
+-0.6021 THE COFFEE IS
+-0.6021 YOUR COFFEE </s>
+-0.6021 YOUR COFFEE IS
+
+\end\

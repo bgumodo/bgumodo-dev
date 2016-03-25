@@ -1,0 +1,87 @@
+Language model created by QuickLM on Tue Mar  8 08:35:21 EST 2016
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 11 sentences and 14 words
+
+\data\
+ngram 1=14
+ngram 2=22
+ngram 3=28
+
+\1-grams:
+-2.1818 ---------- -0.2684
+-1.1405 </s> -0.3010
+-1.1405 <s> -0.2684
+-1.5798 A -0.2894
+-1.4829 BRING -0.2495
+-1.1818 COFFEE -0.2684
+-1.5798 CUP -0.2894
+-1.4829 GET -0.2331
+-2.1818 GETME -0.2715
+-1.7047 GO -0.2835
+-2.1818 KOMOD -0.2865
+-1.2276 KOMODO -0.2622
+-1.3367 ME -0.2591
+-1.5798 OF -0.2715
+
+\2-grams:
+-0.3010 ---------- </s> -0.3010
+-1.3424 <s> ---------- 0.0000
+-1.3424 <s> KOMOD 0.0000
+-0.3882 <s> KOMODO 0.0000
+-0.3010 A CUP 0.0000
+-1.0000 BRING COFFEE 0.0000
+-0.3979 BRING ME 0.0000
+-0.3010 COFFEE </s> -0.3010
+-0.3010 CUP OF 0.0000
+-1.0000 GET COFFEE 0.0000
+-1.0000 GET GET -0.1461
+-0.5229 GET ME 0.0000
+-0.3010 GETME COFFEE 0.0000
+-0.4771 GO BRING -0.0792
+-0.7782 GO GETME 0.0000
+-0.3010 KOMOD BRING -0.0792
+-0.9542 KOMODO BRING 0.0000
+-0.6532 KOMODO GET 0.0000
+-0.7782 KOMODO GO 0.0000
+-0.5441 ME A 0.0000
+-0.6690 ME COFFEE 0.0000
+-0.3010 OF COFFEE 0.0000
+
+\3-grams:
+-0.3010 <s> ---------- </s>
+-0.3010 <s> KOMOD BRING
+-0.9542 <s> KOMODO BRING
+-0.6532 <s> KOMODO GET
+-0.7782 <s> KOMODO GO
+-0.3010 A CUP OF
+-0.3010 BRING COFFEE </s>
+-0.6021 BRING ME A
+-0.6021 BRING ME COFFEE
+-0.3010 CUP OF COFFEE
+-0.3010 GET COFFEE </s>
+-0.3010 GET GET ME
+-0.4771 GET ME A
+-0.7782 GET ME COFFEE
+-0.3010 GETME COFFEE </s>
+-0.3010 GO BRING ME
+-0.3010 GO GETME COFFEE
+-0.3010 KOMOD BRING ME
+-0.6021 KOMODO BRING COFFEE
+-0.6021 KOMODO BRING ME
+-0.9031 KOMODO GET COFFEE
+-0.9031 KOMODO GET GET
+-0.6021 KOMODO GET ME
+-0.4771 KOMODO GO BRING
+-0.7782 KOMODO GO GETME
+-0.3010 ME A CUP
+-0.3010 ME COFFEE </s>
+-0.3010 OF COFFEE </s>
+
+\end\

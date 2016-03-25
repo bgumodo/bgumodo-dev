@@ -1,0 +1,3 @@
+# Synchronous indicator wheather komodo_speech is currently handling a command
+---
+bool processing # Is komodo_speech currently handling a command
