@@ -15,4 +15,4 @@ Side grasping | Top grasping
 ------------- | ------------
 get desired base pose (geometry_msgs/PoseStamped) by sending **bgumodo_arm/TwoPoints** message type to **base_pose_calc/input_points** | SAME
 manipulate by sending **geometry_msgs/Point** message type with the cup position to **side_grasping_manipulator/command** | get final desired base pose (geometry_msgs/PoseStamped) by sending **geometry_msgs/Point** message type with the cup position to **top_grasping_base_pose_calc/input_point**
- | manipulate by sending **geometry_msgs/Point** message type with the cup position to **top_grasping_manipulator/command**
+- | manipulate by sending **geometry_msgs/Point** message type with the cup position to **top_grasping_manipulator/command**
