@@ -135,16 +135,24 @@ include_directories(
 # add_dependencies(komodo_grasping_manipulator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(grasping_manipulator src/grasping_manipulator.cpp)
+add_executable(top_grasping_manipulator src/top_grasping_manipulator.cpp)
 add_executable(base_pose_calc src/base_pose_calc.cpp)
+add_executable(top_grasping_base_pose_calc src/top_grasping_base_pose_calc.cpp)
+add_executable(push_manipulator src/push_manipulator.cpp)
+add_executable(side_grasping_manipulator src/side_grasping_manipulator.cpp)
+
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(grasping_manipulator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(top_grasping_manipulator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(base_pose_calc ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(top_grasping_base_pose_calc ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(push_manipulator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(side_grasping_manipulator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(grasping_manipulator
+target_link_libraries(top_grasping_manipulator
    ${catkin_LIBRARIES}
    ${Boost_LIBRARIES}
 )
@@ -152,7 +160,18 @@ target_link_libraries(base_pose_calc
    ${catkin_LIBRARIES}
    ${Boost_LIBRARIES}
 )
-
+target_link_libraries(top_grasping_base_pose_calc
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
+target_link_libraries(push_manipulator
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
+target_link_libraries(side_grasping_manipulator
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
 #############
 ## Install ##
 #############
