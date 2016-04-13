@@ -140,6 +140,7 @@ add_executable(base_pose_calc src/base_pose_calc.cpp)
 add_executable(top_grasping_base_pose_calc src/top_grasping_base_pose_calc.cpp)
 add_executable(push_manipulator src/push_manipulator.cpp)
 add_executable(side_grasping_manipulator src/side_grasping_manipulator.cpp)
+add_executable(upper_grasping_manipulator src/upper_grasping_manipulator.cpp)
 
 
 ## Add cmake target dependencies of the executable
@@ -149,6 +150,7 @@ add_dependencies(base_pose_calc ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXP
 add_dependencies(top_grasping_base_pose_calc ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(push_manipulator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(side_grasping_manipulator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(upper_grasping_manipulator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 ## Specify libraries to link a library or executable target against
@@ -169,6 +171,10 @@ target_link_libraries(push_manipulator
    ${Boost_LIBRARIES}
 )
 target_link_libraries(side_grasping_manipulator
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
+target_link_libraries(upper_grasping_manipulator
    ${catkin_LIBRARIES}
    ${Boost_LIBRARIES}
 )
