@@ -15,6 +15,7 @@
 #include "moveit_msgs/CollisionObject.h"
 #include "actionlib/client/simple_action_client.h"
 #include "actionlib_msgs/GoalStatus.h"
+#include "bgumodo_arm/ThreePoints.h"
 
 #define PI 						3.141592654
 #define PRE_GRASPING_ELBOW2 	0.4
@@ -34,7 +35,7 @@ void jointSpaceCalc();
 void setPrePushing();
 void setPushing();
 void setPostPushing();
-void pushButtonManipulator(const geometry_msgs::Point::ConstPtr& button);
+void pushButtonManipulator(const bgumodo_arm::ThreePoints::ConstPtr& req);
 
 
 /*Global variables*/
@@ -76,12 +77,12 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void pushButtonManipulator(const geometry_msgs::Point::ConstPtr& button)
+void pushButtonManipulator(const bgumodo_arm::ThreePoints::ConstPtr& req)
 {
 
-	goal_x = button->x;
-	goal_y = button->y;
-	goal_z = button->z;
+	goal_x = req->object.x;
+	goal_y = req->object.y;
+	goal_z = req->object.z;
 	status.data = "Waiting";
 	status_pub.publish(status);
 
