@@ -19,14 +19,14 @@ double back_dis_calc(double x, double y, double z)
 	if(!(x == 0 && y == 0 && z == 0))
 	{
 		shoulder_th 			= acos((z - 0.7075)/0.4903);
-		back_dis 				= -(0.4903*sin(shoulder_th)+0.4469);
+		back_dis 				= (0.4903*sin(shoulder_th)+0.4469);
 	}
-
 	return back_dis;
 }
 
 void calculate(const bgumodo_arm::ThreePoints::ConstPtr& req)
 {
+	ROS_INFO("Got ThreePoints...");
 	double vec_size, x_l, x_r, y_l, y_r, yaw, cup_x, cup_y, cup_z, back_dis;
 	geometry_msgs::Point d_o;
 	geometry_msgs::PoseStamped res;
@@ -44,12 +44,12 @@ void calculate(const bgumodo_arm::ThreePoints::ConstPtr& req)
 	if(!(x_l == 0 && x_r == 0 && y_l == 0 && y_r == 0))
 	{
 		vec_size = sqrt(pow((x_l-x_r),2)+pow((y_l-y_r),2));
-		d_o.x = -(y_r+y_l)/vec_size;
-		d_o.y = (x_r-x_l)/vec_size;
+		d_o.x = (y_l-y_r)/vec_size;
+		d_o.y = -(x_l-x_r)/vec_size;
 		d_o.z = 0;
 
-		res.pose.position.x = (x_r+x_l)/2 - back_dis*d_o.x;
-		res.pose.position.y = (y_r+y_l)/2 - back_dis*d_o.y;
+		res.pose.position.x = cup_x - back_dis*d_o.x;
+		res.pose.position.y = cup_y - back_dis*d_o.y;
 		res.pose.position.z = 0;
 
 		yaw = atan2(d_o.y,d_o.x);
@@ -74,12 +74,20 @@ int main(int argc, char *argv[])
     ros::NodeHandle n;
    
    	pose_pub 			= n.advertise<geometry_msgs::PoseStamped>("base_pose_calc/desired_pose", 100);
-	ros::Subscriber sub = n.subscribe("base_pose_calc/input_points", 10, calculate);
+	ros::Subscriber sub = n.subscribe("base_pose_calc/input_points", 1000, calculate);
 
 	ros::Duration(1.0).sleep(); //time to construct ros subscribers and publishers
 
-    ROS_INFO("Ready to get two points...");
-    ros::spin();
+    ROS_INFO("Ready to get ThreePoints...");
+
+    ros::Rate rate(10.0);
+    while (n.ok())
+    {
+    	ros::spinOnce();
+    	rate.sleep();
+    }
+
+    //ros::spin();
 	
 	return 0;
 }
