@@ -15,6 +15,7 @@
 #include "moveit_msgs/CollisionObject.h"
 #include "actionlib/client/simple_action_client.h"
 #include "actionlib_msgs/GoalStatus.h"
+#include "bgumodo_arm/ThreePoints.h"
 
 #define PI 						3.141592654
 #define PRE_GRASPING_ELBOW2 	0.4
@@ -36,7 +37,7 @@ void setPreGrasping();
 void setGraspingFirstStep();
 void setGraspingSecondStep();
 void setPostGrasping();
-void coffeeGrasspingManipultaor(const geometry_msgs::Point::ConstPtr& cup);
+void coffeeGrasspingManipultaor(const bgumodo_arm::ThreePoints::ConstPtr& req);
 
 
 /*Global variables*/
@@ -78,12 +79,11 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void coffeeGrasspingManipultaor(const geometry_msgs::Point::ConstPtr& cup)
+void coffeeGrasspingManipultaor(const bgumodo_arm::ThreePoints::ConstPtr& req)
 {
-
-	goal_x = cup->x;
-	goal_y = cup->y;
-	goal_z = cup->z;
+	goal_x = req->cup.x;
+	goal_y = req->cup.y;
+	goal_z = req->cup.z;
 	status.data = "Waiting";
 	status_pub.publish(status);
 
