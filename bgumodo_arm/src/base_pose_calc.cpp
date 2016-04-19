@@ -35,9 +35,9 @@ void calculate(const bgumodo_arm::ThreePoints::ConstPtr& req)
 	x_r 	= req->p_right.x;
 	y_l 	= req->p_left.y;
 	y_r 	= req->p_right.y;
-	cup_x 	= req->cup.x;
-	cup_y 	= req->cup.y;
-	cup_z 	= req->cup.z;
+	cup_x 	= req->object.x;
+	cup_y 	= req->object.y;
+	cup_z 	= req->object.z;
 
 	back_dis = back_dis_calc(cup_x,cup_y,cup_z);
 
