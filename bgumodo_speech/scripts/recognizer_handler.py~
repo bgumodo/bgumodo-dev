@@ -42,7 +42,6 @@ class RecognizerHandler:
 
         rospy.set_param("/{}/lm".format(self.recognizerName), self.lmFile)
         rospy.set_param("/{}/dict".format(self.recognizerName), self.dictFile)
-	rospy.set_param("/{}/mic_name".format(self.recognizerName), "alsa_input.usb-PrimeSense_PrimeSense_Device-01-Device.iec958-stereo")
 
         # TODO: replace with roslaunch API
         os.system("bash -c \"rosrun pocketsphinx recognizer.py {} &> {}/{}.log\" &"

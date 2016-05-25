@@ -56,7 +56,7 @@ class KomodoSpeech:
 
         # Set up result publishers
         self.sayResultPub = rospy.Publisher("~say_result", KomodoSpeechSayResult, queue_size=2)
-        self.speechRecPub = rospy.Publisher("~rec_result", KomodoSpeechRecResult, queue_size=2)
+        self.speechRecPub = rospy.Publisher("~speech_rec_result", KomodoSpeechRecResult, queue_size=2)
 
         # Set up utility services
         self.isInProgressSrv = \
