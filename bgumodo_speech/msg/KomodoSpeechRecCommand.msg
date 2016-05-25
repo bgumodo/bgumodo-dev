@@ -1,15 +1,25 @@
 Header header
 
 # Command meta-data
-string CMD_START=start           # String value for start command 
-string CMD_STOP=stop             # String value for stop command
+# String value for start command 
+string CMD_START=start
+# String value for stop command
+string CMD_STOP=stop             
 
-string cmd                       # Indicate type of command. Value are either CMD_START or CMD_STOP (default).
+string cmd     # Command type. Values are either CMD_START or CMD_STOP (default).
+
 
 # Category data (Might aid in speech recognition)
-string CAT_YESNO=yes_no          # Possible answer to a "yes/no" question
-string CAT_LOCATIOn=location     # Location description (e.g. 5th floor, building 37, etc.)
-string CAT_COMMAND=command       # Command description (e.g. go get coffee)
-string CAT_ALL=all               # All known phrases
+# Possible answer to a "yes/no" question
+string CAT_YESNO=yes_no
 
-string cat                       # Expected phrase category. Defaults to CAT_ALL
+# Location description (e.g. 5th floor, building 37, etc.)
+string CAT_LOCATIOn=location
+
+# Command description (e.g. go get coffee)
+string CAT_COMMAND=command
+
+# All known phrases
+string CAT_ALL=all               
+
+string cat     # Expected phrase category. Defaults to CAT_ALL

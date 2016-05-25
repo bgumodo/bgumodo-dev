@@ -1,0 +1,23 @@
+-ID 0 # Ground Floor
+ground
+
+-ID 1 # First Floor
+first
+floor.*one
+
+-ID 2 # Second Floor
+second
+floor.*two
+
+-ID 3 # Third Floor
+third 
+floor.*three
+
+-ID 4 # Fourth Floor
+fourth
+floor.*four
+
+-ID 5 # Fifth Floor
+fith
+floor.*five
+

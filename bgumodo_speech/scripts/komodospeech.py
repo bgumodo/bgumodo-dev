@@ -3,8 +3,9 @@ import traceback
 import os
 import re
 
-import rospkg
+import recognizer_handler as RH
 
+import rospkg
 import rospy
 from komodo_speech.msg import KomodoSpeechSayCommand
 from komodo_speech.msg import KomodoSpeechSayResult
@@ -12,7 +13,6 @@ from komodo_speech.msg import KomodoSpeechRecCommand
 from komodo_speech.msg import KomodoSpeechRecResult
 from komodo_speech.srv import KomodoSpeechProcessing
 from komodo_speech.srv import KomodoSpeechProcessingResponse
-from scripts.recognizer_handler import RecognizerHandler
 from sound_play.libsoundplay import SoundClient
 
 __author__ = 'neowizard'
@@ -21,13 +21,12 @@ __author__ = 'neowizard'
 class KomodoSpeech:
     NODE_NAME = "KomodoSpeech"
     PACKAGE_NAME = "komodo_speech"
-    FORMATS_SEPARATOR = "----------"
 
-    debugLevel = 1
+    debugLevel = rospy.DEBUG
 
     inProgress = False
 
-    recognizers = {}
+    rec_handlers = {}
 
     soundClient = None
     sayCommandSub = None
@@ -38,12 +37,7 @@ class KomodoSpeech:
 
     def __init__(self, voice='voice_cmu_us_rms_arctic_clunits'):
         fname = self.NODE_NAME
-
-        if (self.debugLevel >= 1):
-            rospy_debug_level = rospy.DEBUG
-        else:
-            rospy_debug_level = None
-        rospy.init_node(self.NODE_NAME, anonymous=False, log_level=rospy_debug_level)
+        rospy.init_node(self.NODE_NAME, anonymous=False, log_level=self.debugLevel)
 
         rospy.loginfo("{}: Initializing speech node".format(fname))
 
@@ -54,14 +48,17 @@ class KomodoSpeech:
         # Set up speech recognition
         self.init_recognizers()
 
-        self.sayResultPub = rospy.Publisher("~say_result", KomodoSpeechSayResult, queue_size=2)
-        self.speechRecPub = rospy.Publisher("~speech_rec_result", KomodoSpeechRecResult, queue_size=2)
-
+        # Set up command listeners
         self.sayCommandSub = \
             rospy.Subscriber("~say_command", KomodoSpeechSayCommand, self.say_cb, queue_size=2)
         self.speechRecSub = \
             rospy.Subscriber("~rec_command", KomodoSpeechRecCommand, self.recognize_cb)
 
+        # Set up result publishers
+        self.sayResultPub = rospy.Publisher("~say_result", KomodoSpeechSayResult, queue_size=2)
+        self.speechRecPub = rospy.Publisher("~speech_rec_result", KomodoSpeechRecResult, queue_size=2)
+
+        # Set up utility services
         self.isInProgressSrv = \
             rospy.Service("~isProcessing", KomodoSpeechProcessing, self.is_running_cb)
 
@@ -70,51 +67,91 @@ class KomodoSpeech:
     def init_recognizers(self):
         fname = "{}::{}".format(self.NODE_NAME, self.init_recognizers.__name__)
 
-        dict_dir = rospkg.RosPack().get_path(self.PACKAGE_NAME) + "/dict"
+        # Get paths relative to ROS package path
+        package_path = rospkg.RosPack().get_path(self.PACKAGE_NAME)
+        dict_dir = package_path + "/dict"
+        log_dir = package_path + "/logs"
+
+        # Every corpus in the dict directory has its own handler (different category)
         for corpus_file in (dir_file for dir_file in os.listdir(dict_dir) if dir_file.endswith(".corpus")):
-            corpus = corpus_file.replace(".corpus", "")
-            if (os.path.exists(dict_dir + "/" + corpus + ".dic") and
-                    os.path.exists(dict_dir + "/" + corpus + ".lm")):
-                match_re = self.get_corpus_match_re(dict_dir + "/" + corpus_file)
-                lm_path = dict_dir + "/" + corpus + ".lm"
-                dic_path = dict_dir + "/" + corpus + ".dic"
+            category = corpus_file.replace(".corpus", "")
+            if (os.path.exists(dict_dir + "/" + category + ".dic") and
+                    os.path.exists(dict_dir + "/" + category + ".lm")):
+                match_regexs_ids = self.get_corpus_match_re(dict_dir + "/" + category + ".match")
+                lm_path = dict_dir + "/" + category + ".lm"
+                dic_path = dict_dir + "/" + category + ".dic"
 
-                self.recognizers[corpus] = \
-                    RecognizerHandler(corpus, match_re, self.recognizer_match_cb, lm_path, dic_path)
+                self.rec_handlers[category] = RH.RecognizerHandler(category, match_regexs_ids,
+                                                                   self.recognizer_match_cb, lm_path, dic_path, log_dir)
             else:
-                rospy.logwarn("{}: Failed to find .lm or .dic file in {} for {} corpus".format(fname, dict_dir, corpus))
+                rospy.logwarn("{}: Failed to find .lm or .dic file in {} for {} category"
+                              .format(fname, dict_dir, category))
 
-    def recognizer_match_cb(self, recognizer_handler, matched_utterance, match_re):
-        recognizer_handler.stoprecognition()
-        self.speechRecPub.publish(KomodoSpeechRecResult(success=True, phrase=matched_utterance))
+        for handler in self.rec_handlers.values():
+            handler.wait_for_recognizer(10)
 
+    def recognizer_match_cb(self, recognizer_handler, recognized_utterance, match_id_pair):
+        fname = "{}::{}".format(self.NODE_NAME, self.recognizer_match_cb.__name__)
 
+        rospy.loginfo("{}: Detected {}, Matched to {} (ID = {}) by the {} recognizer"
+                      .format(fname, recognized_utterance, match_id_pair[0], match_id_pair[1],
+                              recognizer_handler.recognizerId))
+
+        recognizer_handler.stop_recognition()
+        self.speechRecPub.publish(KomodoSpeechRecResult(success=True,
+                                                        cat=recognizer_handler.recognizerId,
+                                                        phrase_id=match_id_pair[1]))
 
     def get_corpus_match_re(self, corpus_file_path):
+        fname = "{}::{}".format(self.NODE_NAME, self.get_corpus_match_re.__name__)
+
+        curr_id = -1
+        regexs_ids = {}
         with open(corpus_file_path) as corpus_file:
             for format_line in corpus_file:
-                if (format_line == self.FORMATS_SEPARATOR):
-                    break
-                format_re = format_line.replace(" ", ".*")
-                yield re.compile(format_re)
+                format_line = format_line.split('#')[0]  # Remove any trailing comment
+                format_line = format_line.strip()  # Remove any leading/trailing newlines/tabs/spaces
+                if (len(format_line) == 0):
+                    continue
+                elif (format_line.startswith("-ID")):
+                    id_parts = format_line.split()
+                    if (len(id_parts) != 2 or not id_parts[1].isdigit()):
+                        rospy.logerr("{}: Invalid ID-tag format: {} (should be \"-ID <id>\"). Keeping curr ID, {}"
+                                     .format(fname, format_line, curr_id))
+                    else:
+                        curr_id = int(id_parts[1])
+                else:
+                    regex = re.compile(format_line)
+                    regexs_ids[regex] = curr_id
+
+        return regexs_ids
 
     def recognize_cb(self, rec_command):
         fname = "{}::{}".format(self.NODE_NAME, self.recognize_cb.__name__)
 
+        prev_state = self.inProgress
         self.inProgress = True
+
+        rospy.logdebug("{}: Handling recognition command\n"
+                       "\tCommand = {}\n"
+                       "\tCAT = {}\n"
+                       "\t".format(fname, rec_command.cmd, rec_command.cat))
+
         category = rec_command.cat
 
         if (rec_command.cmd == KomodoSpeechRecCommand.CMD_STOP):
-            self.recognizers[category].stop_recogniion()
-            self.inProgress = False
+            self.rec_handlers[category].stop_recognition()
+            self.inProgress = prev_state
             return
 
-        if (rec_command.cmd == KomodoSpeechRecCommand.CMD_START):
-            if not self.recognizers[category].start_recognition():
+        elif (rec_command.cmd == KomodoSpeechRecCommand.CMD_START):
+            if not self.rec_handlers[category].start_recognition():
                 rospy.logerr("{}: Can't perform speech recognition. "
                              "Failed to start PocketSphinx recognizer {}".
-                             format(fname, self.recognizers[category].RecognizerID))
-                self.inProgress = False
+                             format(fname, self.rec_handlers[category].RecognizerID))
+                self.inProgress = prev_state
+        else:
+            rospy.logdebug("{}: Unknown recognition command {}".format(fname, rec_command.cmd))
 
     def is_running_cb(self):
         return KomodoSpeechProcessingResponse(self.inProgress)
@@ -149,10 +186,9 @@ class KomodoSpeech:
         return True
 
 
-if __name__ == '__main__':
-    try:
-        roomScanner = KomodoSpeech()
-        rospy.spin()
+def main():
+    roomScanner = KomodoSpeech()
+    rospy.spin()
 
-    except rospy.ROSInterruptException, e:
-        pass
+if __name__ == '__main__':
+    main()
