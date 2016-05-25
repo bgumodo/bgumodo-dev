@@ -81,9 +81,9 @@ int main(int argc, char *argv[])
 
 void coffeeGrasspingManipultaor(const bgumodo_arm::ThreePoints::ConstPtr& req)
 {
-	goal_x = req->cup.x;
-	goal_y = req->cup.y;
-	goal_z = req->cup.z;
+	goal_x = req->object.x;
+	goal_y = req->object.y;
+	goal_z = req->object.z;
 	status.data = "Waiting";
 	status_pub.publish(status);
 
