@@ -93,8 +93,8 @@ class KomodoSpeech:
     def recognizer_match_cb(self, recognizer_handler, recognized_utterance, match_id_pair):
         fname = "{}::{}".format(self.NODE_NAME, self.recognizer_match_cb.__name__)
 
-        rospy.loginfo("{}: Detected {}, Matched to {} (ID = {}) by the {} recognizer"
-                      .format(fname, recognized_utterance, match_id_pair[0], match_id_pair[1],
+        rospy.loginfo("{}: Detected {}, Matched to '{}' (ID = {}) by the {} recognizer"
+                      .format(fname, recognized_utterance, match_id_pair[0].pattern, match_id_pair[1],
                               recognizer_handler.recognizerId))
 
         recognizer_handler.stop_recognition()

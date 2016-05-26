@@ -45,7 +45,7 @@ class RecognizerHandler:
 	rospy.set_param("/{}/mic_name".format(self.recognizerName), "alsa_input.usb-PrimeSense_PrimeSense_Device-01-Device.iec958-stereo")
 
         # TODO: replace with roslaunch API
-        os.system("bash -c \"rosrun pocketsphinx recognizer.py {} &> {}/{}.log\" &"
+        os.system("bash -c \"rosrun komodo_speech recognizer.py {} &> {}/{}.log\" &"
                   .format(recognizer_id, self.recognizerLogDir, self.recognizerId))
 
     def wait_for_recognizer(self, timeout):
