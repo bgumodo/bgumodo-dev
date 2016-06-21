@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<launch>
+  <node name="get_xy_server" pkg="bgumodo_vision" output="screen" type="get_xy_service.py" >
+  </node>
+  
+
+  <node name="get_distance_server" pkg="bgumodo_vision" output="screen" type="get_pcl" >
+  </node>
+  
+
+  <node name="detector_master" pkg="bgumodo_vision" output="screen" type="detector_master.py" >
+  </node>
+
+
+</launch> 

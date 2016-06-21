@@ -5,10 +5,11 @@ import rospy
 import cv2
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
+from bgumodo_arm.msg import ThreePoints
 from cv_bridge import CvBridge, CvBridgeError
 import argparse
 import numpy as np
-from BGUModo.srv import *
+from bgumodo_vision.srv import *
 
 
 def get_distance_client(x, y):
@@ -31,28 +32,46 @@ def get_xy_client(obj_type):
         print "Service call failed: %s"%e
 # ADD IF NO IMAGE YET, SERVICE RETURNS 0 OR SOMTHING AND THAM CLIENT WAIT A SEC AND ASK AGAIN -20 TIMES TIMEOUT 
 
+class Detector():
+    def __init__(self):
+        self.pubCupRes = rospy.Publisher('detector/observe_cup_res', ThreePoints, queue_size=5)
+        self.pubButtonRes = rospy.Publisher('detector/observe_button_res', ThreePoints, queue_size=5)
 
-#def main(args):
-# main detection body
-cup=get_xy_client(2) # 1 is for detecting a table, 2 is for detecting a cup, 
-cup=get_distance_client(cup.x[0], cup.y[0])
-print "************************************"
-print "cup points: "
-print cup.x,cup.y,cup.z,cup.d
-print ""
+    def observe_cup_callback(self, cmd):
+        if (not cmd.data == "Start"):
+            return
 
-table=get_xy_client(1) # 1 is for detecting a table, 2 is for detecting a cup, 
-table_left=get_distance_client(table.x[0], table.y[0])
-print "************************************"
-print "table left: "
-# the data is stored in the following format: 
-#                                               table_left.x,table_left.y,table_left.z,table_left.d
-print table_left
-print ""
+        rospy.loginfo("Got cup observe command")
+        result = ThreePoints()
+        
+        
+        cup = get_xy_client(2) # 1 is for detecting a table, 2 is for detecting a cup, 
+        print ("cup", cup)
+        if cup.x is not None:
+            cup = get_distance_client(cup.x[0], cup.y[0])
+            print('cup1',cup)
+            result.object.x = cup.z + 0.031 - 0.34
+            result.object.y = -cup.x 
+            result.object.z = cup.y + 0.863 - 0.16
+        else:
+            print 'cup is none'
 
-table_right=get_distance_client(table.x[1], table.y[1])
-print "************************************"
-print "table right: "
-print table_right
-print ""
-print "************************************"
+        rospy.loginfo("Published cup result")
+        self.pubCupRes.publish(result)
+
+
+    def observe_button_callback(self, cmd):
+        return
+
+if __name__ == '__main__':
+    try:
+        detector_obj = Detector()
+        rospy.init_node('detector_master', anonymous=False)
+        rospy.Subscriber('detector/observe_cup_cmd', String, detector_obj.observe_cup_callback)
+        rospy.Subscriber('detector/observe_button_cmd', String, detector_obj.observe_button_callback)
+
+
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        pass
+
