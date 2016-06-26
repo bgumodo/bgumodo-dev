@@ -1,22 +1,18 @@
-## clone git to new computer
-* open catkin_ws/src
-* git init
+## setting-up the simulation 
+* cd catkin_ws/src
 * git clone https://github.com/bgumodo/bgumodo-dev.git
+* git clone https://github.com/robotican/robotican.git
+* cd robotican && git checkout temp_branch
+* follow [link](http://wiki.ros.org/robotican/Tutorials). for further installation.
+* cd ~/catkin_ws
+* catkin_make
 
-## get last changes 
-* git pull https://github.com/bgumodo/bgumodo-dev.git
-
-## editing
-* edit your code
-* open a terminal and type 'git gui'
-* use the gui to stage, commit and push your edit 
-
-### Running armadilo simulation:
+## Running armadilo simulation:
 * roslaunch robotican_demos armadillo_moveit_and_nav.launch
 * rosrun robotican_demos simple_move_group_goals
 * rosrun robotican_demos simple_navigation_goals
 
-## example: move arm command
+## example: move arm publish command
 rostopic pub /move_arm geometry_msgs/PoseStamped "header:  
   seq: 0  
   stamp:  
@@ -34,7 +30,7 @@ pose:
     z: 0.0  
     w: 0.91"  
 
-## example: navigation command
+## example: navigation publish command
 rostopic pub /nav_command geometry_msgs/PoseStamped "header:  
   seq: 0  
   stamp:  
@@ -52,8 +48,9 @@ pose:
     z: 0.0  
     w: 1.0"  
  
-## add coke can to the simulation
-rosrun gazebo_ros spawn_model -database coke_can -sdf -model coke_can5 -z 1.1 -y 8.10 -x -8.44
+## adding coke can to the simulation
+rosrun gazebo_ros spawn_model -database coke_can -sdf -model coke_can5 -z 1.1 -y 8.10 -x -8.44  
+ToDo - change to rosservice call..
 
 ## remove the coke can from simulation
 rosservice call gazebo/delete_model '{model_name: coke_can2}'
