@@ -3,7 +3,7 @@
 * git clone https://github.com/bgumodo/bgumodo-dev.git
 * git clone https://github.com/robotican/robotican.git
 * cd robotican && git checkout temp_branch
-* follow [link](http://wiki.ros.org/robotican/Tutorials). for further installation.
+* follow [this](http://wiki.ros.org/robotican/Tutorials) for further robotican installation.
 * cd ~/catkin_ws
 * catkin_make
 
