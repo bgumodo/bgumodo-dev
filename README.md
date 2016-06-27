@@ -50,7 +50,15 @@ pose:
  
 ## adding coke can to the simulation
 rosrun gazebo_ros spawn_model -database coke_can -sdf -model coke_can5 -z 1.1 -y 8.10 -x -8.44  
-ToDo - change to rosservice call..
+ROS Node API:  
+char exec[128] = {'\0'};  
+sprintf(exec, "rosrun gazebo_ros spawn_model -database coke_can -sdf -model coke_can2 -x %f -y %f -z %f",button_x, button_y, button_z);  
+// bash command
+FILE *process = popen(exec, "r");  
+if(process == 0) {  
+    ROS_ERROR("[%s]: can't start the procces shuting down the node :(", ros::this_node::getName().c_str());  
+    ros::shutdown();  
+}  
 
 ## remove the coke can from simulation
 rosservice call gazebo/delete_model '{model_name: coke_can2}'
