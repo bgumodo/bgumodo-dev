@@ -70,3 +70,19 @@ rosservice call gazebo/delete_model '{model_name: coke_can2}'
 * notice only one red object should be in the scene. if you get NaN reading check if object is to close. (in gazebo table with objects world I have checked with the Cola can position on the far end of the table.)
 * you may need to play around with the kinect's tilt to see the objects better - to do so call use the rqt's message publisher to call the topic "/pan_tilt_controller/command" and in the "data" field enter your desired position in radians ([pan, tilt]), e.g [0.0, 0.3]
 
+
+## Navigation instructions:
+
+Run "roslaunch bgumodo_nav armadillo_moveit_with_nav_alex.launch".
+To start navigation publish to topic "/navigation/move_cmd" with type=String the following options: (case sensitive)
+
+	1. "door_zone_1" : door closed position.
+	2. "door_zone_2" : door opened position.
+	3. "room_4" : target room with coke can.
+	4. "room_2" : final target room for coke can.
+
+Subscribe to topic "/navigation/move_res" type=String for the navigation result.
+Possible result:
+	1. "Success"
+	2. "Failed"
+
