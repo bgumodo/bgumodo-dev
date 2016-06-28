@@ -68,3 +68,5 @@ rosservice call gazebo/delete_model '{model_name: coke_can2}'
 * run with "roslaunch bgumodo_vision bgumodo_vision.launch"
 * to initiate detection - call topic "/detector/observe_cup_cmd" with string "Start"
 * notice only one red object should be in the scene. if you get NaN reading check if object is to close. (in gazebo table with objects world I have checked with the Cola can position on the far end of the table.)
+* you may need to play around with the kinect's tilt to see the objects better - to do so call use the rqt's message publisher to call the topic "/pan_tilt_controller/command" and in the "data" field enter your desired position in radians ([pan, tilt]), e.g [0.0, 0.3]
+
