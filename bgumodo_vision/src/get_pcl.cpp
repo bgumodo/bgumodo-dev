@@ -118,9 +118,9 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 
                 if (point.z>0.1) {// if pixel is not to close - put in rgb informatiom. 
                     Eigen::Vector3i rgb = point.getRGBVector3i();
-                    result.at<cv::Vec3b>(h,w)[0] = point.r;
+                    result.at<cv::Vec3b>(h,w)[0] = point.b;
                     result.at<cv::Vec3b>(h,w)[1] = point.g;
-                    result.at<cv::Vec3b>(h,w)[2] = point.b;
+                    result.at<cv::Vec3b>(h,w)[2] = point.r;
                 }
                 else {// if not make black
                     result.at<cv::Vec3b>(h,w)[0]=0;

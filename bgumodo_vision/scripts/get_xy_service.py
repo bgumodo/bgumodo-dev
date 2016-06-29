@@ -122,8 +122,8 @@ def callback(data):
 def get_xy_server():
   
   rospy.init_node('get_xy_server')
-  #rospy.Subscriber("/kinect2/hd/image_color",Image,callback)
-  rospy.Subscriber("depth_test/output_video",Image,callback)
+  rospy.Subscriber("/kinect2/hd/image_color",Image,callback)
+  #rospy.Subscriber("depth_test/output_video",Image,callback)
 
 
   s = rospy.Service('get_xy', GetXY, handle_get_xy)
