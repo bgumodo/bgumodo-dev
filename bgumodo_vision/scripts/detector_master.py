@@ -5,7 +5,7 @@ import rospy
 import cv2
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from bgumodo_arm.msg import ThreePoints
+from geometry_msgs.msg import PoseStamped
 from cv_bridge import CvBridge, CvBridgeError
 import argparse
 import numpy as np
@@ -34,25 +34,29 @@ def get_xy_client(obj_type):
 
 class Detector():
     def __init__(self):
-        self.pubCupRes = rospy.Publisher('detector/observe_cup_res', ThreePoints, queue_size=5)
-        self.pubButtonRes = rospy.Publisher('detector/observe_button_res', ThreePoints, queue_size=5)
+        self.pubCupRes = rospy.Publisher('detector/observe_red_res', PoseStamped, queue_size=10)
 
     def observe_cup_callback(self, cmd):
         if (not cmd.data == "Start"):
             return
 
         rospy.loginfo("Got cup observe command")
-        result = ThreePoints()
+        result = PoseStamped()
         
         
         cup = get_xy_client(2) # 1 is for detecting a table, 2 is for detecting a cup, 
-        print ("cup", cup)
-        if cup.x is not None:
+        print ("cup in image", cup)
+        if cup is not None:
             cup = get_distance_client(cup.x[0], cup.y[0])
-            print('cup1',cup)
-            result.object.x = cup.z + 0.031 - 0.34
-            result.object.y = -cup.x 
-            result.object.z = cup.y + 0.863 - 0.16
+            print('cup in world',cup)
+            result.header.frame_id='kinect2_depth_optical_frame'
+            result.pose.position.x = cup.x
+            result.pose.position.y = cup.y 
+            result.pose.position.z = cup.z
+            result.pose.orientation.x = 0.0
+            result.pose.orientation.y = 0.0 
+            result.pose.orientation.z = 0.0
+	    result.pose.orientation.w = 1.0
         else:
             print 'cup is none'
 
@@ -67,8 +71,7 @@ if __name__ == '__main__':
     try:
         detector_obj = Detector()
         rospy.init_node('detector_master', anonymous=False)
-        rospy.Subscriber('detector/observe_cup_cmd', String, detector_obj.observe_cup_callback)
-        rospy.Subscriber('detector/observe_button_cmd', String, detector_obj.observe_button_callback)
+        rospy.Subscriber('detector/observe_red_cmd', String, detector_obj.observe_cup_callback)
 
 
         rospy.spin()
