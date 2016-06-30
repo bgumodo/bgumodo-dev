@@ -19,10 +19,10 @@ class Move:
 
         self.locations = dict()
 
-        self.locations["room_2"] = Pose(Point(0.848, -0.953, 0), Quaternion(0, 0, 0.704, 0.710))
-        self.locations["door_zone_1"] = Pose(Point(-9, 3.3, 0), Quaternion(0, 0, 0.704, 0.710))
-        self.locations["door_zone_2"] = Pose(Point(-9, 6, 0), Quaternion(0, 0, 0.704, 0.710))
-        self.locations["room_4"] = Pose(Point(-4.51, 8.347, 0), Quaternion(0, 0, 0.704, 0.710))
+        self.locations["room_2"] = Pose(Point(-0.597, -0.423, 0), Quaternion(0, 0, 0.930, 0.368))
+        self.locations["door_zone_1"] = Pose(Point(-9.4, 4, 0), Quaternion(0, 0, 1, -0.023))
+        self.locations["door_zone_2"] = Pose(Point(-9.105, 6.080, 0), Quaternion(0, 0, -0.373, 0.928))
+        self.locations["room_4"] = Pose(Point(-4.04, 8.210, 0), Quaternion(0, 0, 0.771, 0.636))
 
     def move_call_back(self, data):
         loc = str(data.data)

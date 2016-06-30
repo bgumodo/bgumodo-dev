@@ -3,7 +3,7 @@
 
      <include file="$(find bgumodo_nav)/launch/armadillo_alex.launch">
 		 <arg name="gazebo" value="true"/>
-		 <arg name="world_name" value="$(find robotican_common)/worlds/building6.sdf"/> 
+		 <arg name="world_name" value="$(find robotican_common)/worlds/building_with_elevator.sdf"/>
 		 <arg name="x" value="0.0"/>
 		 <arg name="y" value="-1.0"/>
 		 <arg name="kinect2" value="true"/> 
@@ -13,9 +13,19 @@
 		 <arg name="move_base" value="true"/> 
 		 <arg name="amcl" value="true"/>
 		 <arg name="have_map_file" value="true"/>
-		 <arg name="map_file" value="$(find robotican_common)/maps/building6.1.yaml"/>
+		 <arg name="map_file" value="$(find robotican_common)/maps/building.yaml"/>
 		 <arg name="lidar" value="true"/>
     </include>
+
+	<node name="button_node" pkg="robotican_demos" type="button_node" output="screen">
+		<param name="~moving_frame" value="left_finger_tip"/>
+		<param name="~goal_x" value="-10.059741"/>
+		<param name="~goal_y" value="4.108188"/>
+		<param name="~goal_z" value="1.0"/>
+		<param name="~goal_tol" value="0.15"/>
+		<param name="~sys_cmd" value="espeak -v en-uk 'Button reached'; rosservice call gazebo/delete_model '{model_name: unit_box_2}'"/>
+	</node>
+	<node pkg="tf" type="static_transform_publisher" name="left_finger_tip_broadcaster" args="0.0 0.0168 0.093 0 0 0 left_finger_link left_finger_tip 50"/>
 	
 	<node pkg="laser_scan_matcher" type="laser_scan_matcher_node" name="laser_scan_matcher_node" output="screen">
         <param name="fixed_frame" value = "odom"/>

@@ -1,0 +1,12 @@
+<launch>
+  <node name="plp_grab_coke_can_action_dispatcher" pkg="bgumodo_plan" type="plp_grab_coke_can_action_dispatcher.py" required="true"/>
+  <node name="plp_move_action_dispatcher" pkg="bgumodo_plan" type="plp_move_action_dispatcher.py" required="true"  output="screen"/>
+  <node name="plp_move_through_door_action_dispatcher" pkg="bgumodo_plan" type="plp_move_through_door_action_dispatcher.py" required="true" />
+  <node name="plp_observe_coke_can_action_dispatcher" pkg="bgumodo_plan" type="plp_observe_coke_can_action_dispatcher.py" required="true" output="screen"/>
+  <node name="plp_observe_door_button_action_dispatcher" pkg="bgumodo_plan" type="plp_observe_door_button_action_dispatcher.py" required="true"  output="screen"/>
+  <node name="plp_order_coke_action_dispatcher" pkg="bgumodo_plan" type="plp_order_coke_action_dispatcher.py" required="true"/>
+  <node name="plp_press_door_button_action_dispatcher" pkg="bgumodo_plan" type="plp_press_door_button_action_dispatcher.py" required="true"  output="screen"/>
+  <node name="plp_request_open_door_action_dispatcher" pkg="bgumodo_plan" type="plp_request_open_door_action_dispatcher.py" required="true"/>
+  <node name="plp_serve_can_action_dispatcher" pkg="bgumodo_plan" type="plp_serve_can_action_dispatcher.py" required="true"/>
+</launch>
+
