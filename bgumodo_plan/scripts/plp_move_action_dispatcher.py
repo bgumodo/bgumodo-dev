@@ -64,14 +64,14 @@ class MoveDispatcher(object):
         self.message_store = mongodb_store.message_store.MessageStoreProxy()
         self.action_feedback_pub = rospy.Publisher("/kcl_rosplan/action_feedback", ActionFeedback, queue_size=10)
 
-        self.action_publisher = rospy.Publisher("/navigation/move_cmd", String, queue_size=10)
+        self.action_publisher = rospy.Publisher("nav_to", String, queue_size=10)
 
         self.plp_params = PLP_move_action_Parameters()
         self.plp_vars = PLP_move_action_Variables()
 
         rospy.Subscriber("/kcl_rosplan/action_dispatch", ActionDispatch, self.dispatch_action)
 
-        rospy.Subscriber("/navigation/move_res", String, self.result_updated)
+        rospy.Subscriber("nav_to_res", String, self.result_updated)
 
     def result_updated(self, a_result):
         self.plp_params.set_result(a_result.data)
@@ -131,7 +131,7 @@ class MoveDispatcher(object):
         rospy.loginfo("loc value: %s",self.target_location)
         # dispatch action if got everything
         if self.check_can_dispatch():
-            self.action_publisher.publish(self.target_location)
+        	self.action_publisher.publish(self.target_location)
         else:
         	rospy.loginfo("Failed at running action: %s. Conditions not met for dispatch", action.name)
 

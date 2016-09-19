@@ -52,14 +52,14 @@ class Dispatcher(object):
         self.message_store = mongodb_store.message_store.MessageStoreProxy()
         self.action_feedback_pub = rospy.Publisher("/kcl_rosplan/action_feedback", ActionFeedback, queue_size=10)
 
-        self.action_publisher = rospy.Publisher("vision/observe_can_cmd", String, queue_size=10)
+        self.action_publisher = rospy.Publisher("pose_red_object", String, queue_size=10)
 
         self.plp_params = PLP_observe_coke_can_action_Parameters()
         self.plp_vars = PLP_observe_coke_can_action_Variables()
 
         rospy.Subscriber("/kcl_rosplan/action_dispatch", ActionDispatch, self.dispatch_action)
 
-        rospy.Subscriber("vision/observe_can_res", PoseStamped, self.can_location_updated)
+        rospy.Subscriber("pose_red_object_res", PoseStamped, self.can_location_updated)
 
     def can_location_updated(self, a_can_location):
         self.plp_params.set_can_location(a_can_location)
@@ -116,7 +116,7 @@ class Dispatcher(object):
 
         # dispatch action if got everything
         if self.check_can_dispatch():
-            self.action_publisher.publish("Go")
+            self.action_publisher.publish("Start")
         else:
         	rospy.loginfo("Failed at running action: %s. Conditions not met for dispatch", action.name)
 

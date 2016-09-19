@@ -64,14 +64,14 @@ class Dispatcher(object):
         self.message_store = mongodb_store.message_store.MessageStoreProxy()
         self.action_feedback_pub = rospy.Publisher("/kcl_rosplan/action_feedback", ActionFeedback, queue_size=10)
 
-        self.action_publisher = rospy.Publisher("/navigation/move_cmd", String, queue_size=10)
+        self.action_publisher = rospy.Publisher("nav_to", String, queue_size=10)
 
         self.plp_params = PLP_move_through_door_action_Parameters()
         self.plp_vars = PLP_move_through_door_action_Variables()
 
         rospy.Subscriber("/kcl_rosplan/action_dispatch", ActionDispatch, self.dispatch_action)
 
-        rospy.Subscriber("/navigation/move_res", String, self.result_updated)
+        rospy.Subscriber("nav_to_res", String, self.result_updated)
 
     def result_updated(self, a_result):
         self.plp_params.set_result(a_result.data)
@@ -117,15 +117,19 @@ class Dispatcher(object):
         # from glue pddl->plp parameter glue
         for pair in action.parameters:
             if pair.key == "door":
-                self.target_door = self.message_store.query_named(pair.value, String._type, False)
+                self.query_result = self.message_store.query_named(pair.value, String._type, False)
                 # if not saved special value in DB, use the name (check if list returned is empty)
-                if not self.target_door:
+                if not self.query_result:
                     self.target_door = pair.value
+                else:
+                    self.target_door = query_result[0][0]
             if pair.key == "goal_loc":
-                self.goal_loc = self.message_store.query_named(pair.value, String._type, False)
+                self.query_result = self.message_store.query_named(pair.value, String._type, False)
                 # if not saved special value in DB, use the name (check if list returned is empty)
-                if not self.goal_loc:
+                if not self.query_result:
                     self.goal_loc = pair.value
+                else:
+                    self.goal_loc = query_result[0][0]
 
         # get values from action outputs history
         if not self.target_door:

@@ -8,5 +8,6 @@
   <node name="plp_press_door_button_action_dispatcher" pkg="bgumodo_plan" type="plp_press_door_button_action_dispatcher.py" required="true"  output="screen"/>
   <node name="plp_request_open_door_action_dispatcher" pkg="bgumodo_plan" type="plp_request_open_door_action_dispatcher.py" required="true"/>
   <node name="plp_serve_can_action_dispatcher" pkg="bgumodo_plan" type="plp_serve_can_action_dispatcher.py" required="true"/>
+  <node name="dummy_action_handler" pkg="bgumodo_plan" type="dummy_action_handler.py" required="true"/>
 </launch>
 

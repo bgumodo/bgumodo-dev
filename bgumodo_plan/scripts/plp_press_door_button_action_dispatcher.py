@@ -56,7 +56,7 @@ class Dispatcher(object):
         self.message_store = mongodb_store.message_store.MessageStoreProxy()
         self.action_feedback_pub = rospy.Publisher("/kcl_rosplan/action_feedback", ActionFeedback, queue_size=10)
 
-        self.action_publisher = rospy.Publisher("/move_arm", PoseStamped, queue_size=10)
+        self.action_publisher = rospy.Publisher("arm/press_door_button_cmd", PoseStamped, queue_size=10)
 
         self.plp_params = PLP_press_door_button_action_Parameters()
         self.plp_vars = PLP_press_door_button_action_Variables()

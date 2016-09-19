@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import rospy
+import subprocess
 from std_msgs.msg import String
 from geometry_msgs.msg import PoseStamped
 from diagnostic_msgs.msg import KeyValue
@@ -32,9 +33,9 @@ class Handler(object):
         self.btn_press_pub = rospy.Publisher("arm/press_door_button_res", String, queue_size=10)
         #self.move_through_door_pub = rospy.Publisher("navigation/move_through_door_res", String, queue_size=10)
         self.order_coke_pub = rospy.Publisher("speech/order_coke_res", String, queue_size=10)
-        self.can_loc_pub = rospy.Publisher("vision/observe_can_res", PoseStamped, queue_size=10)
-        self.can_grab_pub = rospy.Publisher("arm/grab_can_res", String, queue_size=10)
-        self.request_elevator_pub = rospy.Publisher("speech/request_open_door_res", String, queue_size=10)
+        #self.can_loc_pub = rospy.Publisher("vision/observe_can_res", PoseStamped, queue_size=10)
+        #self.can_grab_pub = rospy.Publisher("arm/grab_can_res", String, queue_size=10)
+        #self.request_elevator_pub = rospy.Publisher("speech/request_open_door_res", String, queue_size=10)
         self.serve_can_pub = rospy.Publisher("arm/serve_can_res", String, queue_size=10)
 
     	self.speech_rec_pub = rospy.Publisher("/KomodoSpeech/rec_command", KomodoSpeechRecCommand, queue_size=10)
@@ -45,9 +46,9 @@ class Handler(object):
         rospy.Subscriber("arm/press_door_button_cmd", PoseStamped, self.press_btn_callback)
         #rospy.Subscriber("navigation/move_through_door_cmd", String, self.move_through_door_callback)
         rospy.Subscriber("speech/order_coke_cmd", String, self.order_coke_callback)
-        rospy.Subscriber("vision/observe_can_cmd", String, self.observe_can_callback)
-        rospy.Subscriber("arm/grab_can_cmd", PoseStamped, self.grab_can_callback)
-        rospy.Subscriber("speech/request_open_door_cmd", String, self.request_open_door_callback)
+        #rospy.Subscriber("vision/observe_can_cmd", String, self.observe_can_callback)
+        #rospy.Subscriber("arm/grab_can_cmd", PoseStamped, self.grab_can_callback)
+        #rospy.Subscriber("speech/request_open_door_cmd", String, self.request_open_door_callback)
         rospy.Subscriber("arm/serve_can_cmd", String, self.serve_can_callback)
 
         rospy.spin()
@@ -63,13 +64,13 @@ class Handler(object):
     	pos = PoseStamped()
     	pos.header.frame_id = "1"
     	self.btn_loc_pub.publish(pos)
-    
+
     def press_btn_callback(self, data):
     	rospy.loginfo("Dispatching action (press button): Successfuly located elevator button. Pressing button..")
         rospy.loginfo("Button at: %s", data)
     	rospy.sleep(3.)
     	self.btn_press_pub.publish("Success")
-    
+
     def move_through_door_callback(self, data):
     	rospy.loginfo("Dispatching action (move through door): moving through door to location: " + data.data)
     	# command = KomodoSpeechSayCommand()
@@ -86,37 +87,44 @@ class Handler(object):
         rospy.sleep(3.)
     	#result = rospy.wait_for_message("/KomodoSpeech/rec_result", KomodoSpeechRecResult, timeout=120)
     	self.move_through_door_pub.publish("Success")
-    
+
     def order_coke_callback(self, data):
     	rospy.loginfo("Dispatching action (order coke): Ordering coke")
     	command = KomodoSpeechSayCommand()
     	command.header = Header()
-    	command.text_to_say = "Can I have a can of coke please"
+    	command.text_to_say = "Can I have a cup of coffee please"
     	rospy.sleep(1.)
     	self.speech_ask_pub.publish(command)
-    	rospy.sleep(6.)
+    	rospy.sleep(3.)
     	command = KomodoSpeechRecCommand()
     	command.header = Header()
     	command.cmd = 'start'
-    	command.cat = 'coke'
+    	command.cat = 'coffee'
     	self.speech_rec_pub.publish(command)
 
-    	#result = rospy.wait_for_message("/KomodoSpeech/rec_result", KomodoSpeechRecResult, timeout=120)
-    	
-    	self.order_coke_pub.publish("Success")
-    
+    	result = rospy.wait_for_message("/KomodoSpeech/rec_result", KomodoSpeechRecResult, timeout=120)
+
+	if result.success and result.phrase_id is 9:
+		subprocess.call(["rosrun","gazebo_ros", "spawn_model", "-database", "coke_can_slim", "-sdf", "-model", "coke_can_slim", "-y", "7.211008", "-x", "-10.722695", "-z", "0.736", "-Y", "-0.475620"])
+    		self.order_coke_pub.publish("Success")
+        	rospy.loginfo("Done with ordering coke can")
+	else:
+		self.order_coke_pub.publish("Failed")
+	self.order_coke_pub.publish("Success")
+		
+
     def observe_can_callback(self, data):
     	rospy.loginfo("Dispatching action (observe coke can location): Got positive feedback. Observing can location..")
     	rospy.sleep(3.)
     	pos = PoseStamped()
     	pos.header.frame_id = "1"
     	self.can_loc_pub.publish(pos)
-    
+
     def grab_can_callback(self, data):
     	rospy.loginfo("Successfuly located can. Grabbing can..")
     	rospy.sleep(3.)
     	self.can_grab_pub.publish("Success")
-    
+
     def request_open_door_callback(self, data):
     	rospy.loginfo("Dispatching action (request open door): Asking for door open (gripper not free)")
     	command = KomodoSpeechSayCommand()
@@ -132,9 +140,9 @@ class Handler(object):
     	self.speech_rec_pub.publish(command)
 
     	#result = rospy.wait_for_message("/KomodoSpeech/rec_result", KomodoSpeechRecResult, timeout=120)
-    	
+
     	self.request_elevator_pub.publish("Success")
-    
+
     def serve_can_callback(self, data):
     	rospy.loginfo("Dispatching action (serve can): Serving the can of coke")
     	command = KomodoSpeechSayCommand()

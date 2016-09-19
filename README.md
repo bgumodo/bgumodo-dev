@@ -86,3 +86,27 @@ Possible result:
 	1. "Success"
 	2. "Failed"
 
+
+## Plan instructions
+## Prerequisites
+ - ROSPlan must be installed (https://github.com/KCL-Planning/ROSPlan)
+ - Copy our domain.pddl file to rosplan_config/planner in the ROSPlan folder
+
+## Instructions on how to run the full simulation:
+ - kill mongodb service to that clash with rosplan "sudo service mongodb stop"
+ - Run ROSPlan using "roslaunch rosplan_planning_system planning_system_knowledge.launch"
+ - (not mandatory) Run "rqt" and open the ROSPlan dispatcher tab to see the plan execution
+ - Run the simulation using "roslaunch robotican_demos armadillo_office_demo.launch"
+ - Run the actions node using "rosrun robotican_demos demo_pick_node"
+ - Run the speech recognition using "roslaunch komodo_speech komodo_speech.launch" 
+ - Run the ROSPlan middleware and dummy action handler (plp dispatchers) using "roslaunch bgumodo_plan plp_dispatcher.launch"
+ 	- The dummy action handler is responsible for the "Observe button" and "Press button" actions which are not currently implemented. In addition, it is responsible for the "Order coffee" action.
+ - Run the world loader using "rosrun bgumodo_plan world_loader.py"
+ 	- When the world loader is running, it waits 30 seconds for a speech command "komodo get me coffee"/"komodo get me a cup of coffee"/.. and then starts the planning and plan dispatch process
+
+## Changing the plan
+ - In order to change the initial state of the world, open the "world_loader.py" script inside "bgumodo_plan". There are three important functions there:
+ 	- createInstances: This functions create the object instances in the world (rooms, zones, doors, etc.)
+ 	- createFacts: Uses the "addFact" generic function to add new grounded predicates (facts) to the world. This function actually builds the initial state.
+ 	- createGoal: The function that activates the speech module and waits for a command. When a command is received, it takes the current position of the robot (loc) and adds the goal: "(coke_at loc)". This function will be changed if another goal/activation process is needed.
+

@@ -56,14 +56,14 @@ class MoveDispatcher(object):
         self.message_store = mongodb_store.message_store.MessageStoreProxy()
         self.action_feedback_pub = rospy.Publisher("/kcl_rosplan/action_feedback", ActionFeedback, queue_size=10)
 
-        self.action_publisher = rospy.Publisher("arm/grab_can_cmd", PoseStamped, queue_size=10)
+        self.action_publisher = rospy.Publisher("arm_to", PoseStamped, queue_size=10)
 
         self.plp_params = PLP_grab_coke_can_action_Parameters()
         self.plp_vars = PLP_grab_coke_can_action_Variables()
 
         rospy.Subscriber("/kcl_rosplan/action_dispatch", ActionDispatch, self.dispatch_action)
 
-        rospy.Subscriber("arm/grab_can_res", String, self.result_updated)
+        rospy.Subscriber("arm_to_res", String, self.result_updated)
 
     def result_updated(self, a_result):
         self.plp_params.set_result(a_result.data)

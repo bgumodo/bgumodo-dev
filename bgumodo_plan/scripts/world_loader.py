@@ -24,10 +24,6 @@ def callback(data):
 	rospy.loginfo(rospy.get_caller_id() + "Dispatched: %s", data.name)
     
 def listener():
-	rospy.loginfo("Waiting for action dispatch")
-
-	rospy.Subscriber("kcl_rosplan/action_dispatch", ActionDispatch, callback)
-
 	rospy.spin()
 
 def createInstances():
