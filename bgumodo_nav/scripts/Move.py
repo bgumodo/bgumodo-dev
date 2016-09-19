@@ -19,10 +19,10 @@ class Move:
 
         self.locations = dict()
 
-        self.locations["room_2"] = Pose(Point(-0.597, -0.423, 0), Quaternion(0, 0, 0.930, 0.368))
+        self.locations["room_2"] = Pose(Point(-0.597, -0.423, 0), Quaternion(0, 0, 0.930, 0.368)) #initial room of the robot
         self.locations["door_zone_1"] = Pose(Point(-9.4, 4, 0), Quaternion(0, 0, 1, -0.023))
         self.locations["door_zone_2"] = Pose(Point(-9.105, 6.080, 0), Quaternion(0, 0, -0.373, 0.928))
-        self.locations["room_4"] = Pose(Point(-4.04, 8.210, 0), Quaternion(0, 0, 0.771, 0.636))
+        self.locations["room_4"] = Pose(Point(-4.04, 8.210, 0), Quaternion(0, 0, 0.771, 0.636)) #initial room of the can
 
     def move_call_back(self, data):
         loc = str(data.data)
@@ -32,6 +32,25 @@ class Move:
         move_base.wait_for_server(rospy.Duration(60))
         
         rospy.loginfo("Connected to move base server")
+
+        if loc == "room_2":
+            rotate = Pose()
+            rotate.position = self.locations["room_4"].position
+            rotate.orientation = Quaternion(0, 0, -1 * self.locations["room_4"].orientation.z, self.locations["room_4"].orientation.w)
+            #rotate.orientation.x = rotate.orientation.y = 0
+            #rotate.orientation.z = -1 * self.locations["room_4"].orientation.z
+            #rotate.orientation.w = self.locations["room_4"].orientation.w
+
+            goal = MoveBaseGoal()
+
+            goal.target_pose.pose = rotate
+            goal.target_pose.header.frame_id = 'map'
+            goal.target_pose.header.stamp = rospy.Time.now()
+
+            move_base.send_goal(goal)
+
+            move_base.wait_for_result(rospy.Duration(300))
+
 
         print "going to " + loc
 
